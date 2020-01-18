@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
-import { View, TouchableOpacity, TextInput, Dimensions} from 'react-native'
+import { View, TouchableOpacity, TextInput, Dimensions } from 'react-native'
 import { MaterialIcons, Octicons, Ionicons } from '@expo/vector-icons'
+import {Container,Header} from 'native-base'
 const { width, height } = Dimensions.get('window');
 import styles from './styles'
 
@@ -63,9 +64,12 @@ export default class ThoughtList extends Component {
 
     render() {
         return (
-            <View style={styles.container}>
-                {this.ThoughtList(this.state.thoughtsList)}
-            </View>
+            <Container>
+                <Header style={{ height: 0 }} androidStatusBarColor='black'></Header>
+                <View style={styles.container}>
+                    {this.ThoughtList(this.state.thoughtsList)}
+                </View>
+            </Container>
         );
     }
 
@@ -76,14 +80,15 @@ export default class ThoughtList extends Component {
     /// <param name="index">To insert thought at particular postion</param>
     addThought = (myThoughtList, index) => {
         let obj = {}
-        obj.thought = this.state.thought
-
-        myThoughtList[index] = obj
+        if (this.state.focusedThought != myThoughtList[index].thought && !(myThoughtList[index].hasOwnProperty("subList"))) {
+            obj.thought = this.state.thought
+            myThoughtList[index] = obj
+        }
         if (index == myThoughtList.length - 1) {
             myThoughtList.push({})
         }
         this.setState({
-           
+
         }, () => {
             console.log(this.state.thoughtsList)
         })

@@ -17,10 +17,11 @@ export default class TutorialHome extends Component {
             thoughtsList: [{}],
             thought: '',
             focusedThought: '',
-            enableDotTapping: false
+            enableDotTapping: false,
+            inputWidth: 10
         };
     }
- 
+
 
     /// <summary>
     /// TODO : set current index when slider changes..
@@ -253,14 +254,14 @@ export default class TutorialHome extends Component {
     /// <param name="myThought">thought to be added</param>
     /// <param name="index">To insert thought at particular postion</param>
     editThought = (myThoughtList, myThought, index) => {
-
         myThoughtList[index].thought = myThought
         this.setState({
-            thought: myThought
+            thought: myThought,
+
         }, () => {
             console.log('myThoughtList2')
             console.log(myThoughtList)
-            console.log(this.state.thoughtsList)
+            console.log(this.state.inutWidth)
         })
     }
 
@@ -318,7 +319,9 @@ export default class TutorialHome extends Component {
                             />
                         </TouchableOpacity>
                         }
-                        <TextInput style={styles.thoughtText} placeholder='Add a thought' value={item.thought}
+                        <TextInput style={styles.thoughtText}
+                            placeholder='Add a thought'
+                            onChange={(event) => { this.setState({ inputWidth: event.nativeEvent.text.toString().length * 10 }) }}
                             onChangeText={(thought) => { this.editThought(data, thought, index) }}
                             onFocus={() => { this.setState({ focusedThought: item.thought }) }}
                             onBlur={() => { this.setState({ focusedThought: '' }) }}
@@ -328,7 +331,7 @@ export default class TutorialHome extends Component {
 
                         </TextInput>
 
-                        <Text style={{ color: 'white' }}>{item.count}</Text>
+                        {item.count != 1 && <Text style={{ color: 'white' }}>{item.count}</Text>}
                     </View>
                         {item.hasOwnProperty("subList") && item.isOpen && this.ThoughtList(item.subList)}
                     </View>

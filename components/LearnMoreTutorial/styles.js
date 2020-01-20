@@ -30,7 +30,5 @@ const styles = {
         fontSize: 17,
         marginTop: height * 0.02
     },
-
-
 };
 export default styles

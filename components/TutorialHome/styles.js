@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
     },
     thoughtText: {
         color: 'white',
-        fontSize: 18
+        fontSize: 18,padding:0
     },
     thoughtsBody: {
         alignSelf: 'flex-start',

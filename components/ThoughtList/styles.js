@@ -25,5 +25,9 @@ const styles = StyleSheet.create({
         color: 'white',
         fontSize: 18
     },
+    count: {
+        color: 'white',
+        marginLeft: 5
+    }
 });
 export default styles

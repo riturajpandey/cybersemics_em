@@ -6,7 +6,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'black',
         flex: 1,
         alignItems: 'center',
-        paddingTop: height * 0.0
+        paddingTop: height * 0.0,
     },
     carouselWrapper: {
         backgroundColor: '#1B1B1A',
@@ -34,9 +34,9 @@ const styles = StyleSheet.create({
         borderRadius: 40,
         height: height * 0.038,
         marginLeft: width * 0.005,
-        marginTop:height*0.01,
-        opacity: 0.6        
-       
+        marginTop: height * 0.01,
+        opacity: 0.6
+
     },
     sliderButtonDisablePrev: {
         backgroundColor: 'white',
@@ -101,7 +101,8 @@ const styles = StyleSheet.create({
     },
     thoughtText: {
         color: 'white',
-        fontSize: 18,padding:0
+        fontSize: 18,
+        padding: 0,
     },
     thoughtsBody: {
         alignSelf: 'flex-start',
@@ -132,6 +133,10 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         marginHorizontal: 0,
         backgroundColor: 'rgba(255, 255, 255, 0.92)'
+    },
+    count: {
+        color: 'white',
+        marginLeft: 5
     }
 });
 export default styles

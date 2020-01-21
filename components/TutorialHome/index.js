@@ -2,7 +2,7 @@ import React, { Component, } from 'react';
 import { View, Text, TouchableOpacity, TextInput, Dimensions } from 'react-native'
 import { MaterialIcons, Octicons, Ionicons } from '@expo/vector-icons'
 import Carousel, { Pagination } from 'react-native-snap-carousel'; // 3.6.0
-import { Button, Container, Header } from 'native-base';
+import { Button, Container, Header, Content } from 'native-base';
 import styles from './styles'
 import TutorialList from './TutorialList'
 const { width, height } = Dimensions.get('window');
@@ -232,7 +232,7 @@ export default class TutorialHome extends Component {
                 activeDotIndex={this.state.currentIndex}
                 dotStyle={styles.paginationDot}
                 inactiveDotOpacity={0.2}
-                tappableDots={ this.state.enableDotTapping}
+                tappableDots={this.state.enableDotTapping}
                 inactiveDotScale={0.8}
             />
         );
@@ -294,49 +294,51 @@ export default class TutorialHome extends Component {
         return (
             <Container>
                 <Header style={{ height: 0 }} androidStatusBarColor='#1B1B1A'></Header>
-                <View style={styles.container}>
-                    <View style={styles.carouselWrapper}>
-                        <Carousel
-                            ref={(c) => { this._carousel = c; }}
-                            lockScrollWhileSnapping={true}
-                            data={this.state.tutorial}
-                            renderItem={this._renderItem.bind(this)}
-                            onSnapToItem={(index) => this.handleSnapToItem(index, this.state.currentIndex)}
-                            sliderWidth={width}
-                            activeSlideOffset={2}
-                            itemWidth={width}
-                            layout={'default'}
-                            firstItem={0}
-                            enableMomentum={true}
-                        />
-                        {this.pagination}
-                        <View style={styles.sliderButtonWrapper}>
-                            {this.state.currentIndex != this.state.tutorial.length - 1 ?
-                                <Button style={this.state.currentIndex == 0 ? styles.sliderButtonDisablePrev : styles.sliderButton} onPress={() => { this.snapToPrevSlide(this.state.currentIndex) }}>
-                                    <Text style={styles.sliderButtonText}>Prev</Text>
-                                </Button> : <Button style={styles.buttonLearnMore} onPress={() => { this.props.navigation.navigate('LearnMoreTutorial') }} >
-                                    <Text style={styles.sliderButtonText}>Learn More</Text>
-                                </Button>}
+                <Content style={{ backgroundColor: 'black' }}>
+                    <View style={styles.container}>
+                        <View style={styles.carouselWrapper}>
+                            <Carousel
+                                ref={(c) => { this._carousel = c; }}
+                                lockScrollWhileSnapping={true}
+                                data={this.state.tutorial}
+                                renderItem={this._renderItem.bind(this)}
+                                onSnapToItem={(index) => this.handleSnapToItem(index, this.state.currentIndex)}
+                                sliderWidth={width}
+                                activeSlideOffset={2}
+                                itemWidth={width}
+                                layout={'default'}
+                                firstItem={0}
+                                enableMomentum={true}
+                            />
+                            {this.pagination}
+                            <View style={styles.sliderButtonWrapper}>
+                                {this.state.currentIndex != this.state.tutorial.length - 1 ?
+                                    <Button style={this.state.currentIndex == 0 ? styles.sliderButtonDisablePrev : styles.sliderButton} onPress={() => { this.snapToPrevSlide(this.state.currentIndex) }}>
+                                        <Text style={styles.sliderButtonText}>Prev</Text>
+                                    </Button> : <Button style={styles.buttonLearnMore} onPress={() => { this.props.navigation.navigate('LearnMoreTutorial') }} >
+                                        <Text style={styles.sliderButtonText}>Learn More</Text>
+                                    </Button>}
 
-                            {this.state.currentIndex != this.state.tutorial.length - 1 ?
-                                this.state.tutorial[this.state.currentIndex].goToNext ?
-                                    <Button style={styles.sliderButton} onPress={() => { this.snapToNextSlide(this.state.currentIndex) }}>
-                                        <Text style={styles.sliderButtonText}>Next</Text>
-                                    </Button> :
-                                    <Text style={styles.instructionText}>Complete the instructions to continue</Text> :
-                                <Button style={styles.buttonPlayOnMyOwn} onPress={() => { this.props.navigation.navigate('ThoughtList') }}>
-                                    <Text style={styles.sliderButtonText}>Play On My Own</Text>
-                                </Button>}
+                                {this.state.currentIndex != this.state.tutorial.length - 1 ?
+                                    this.state.tutorial[this.state.currentIndex].goToNext ?
+                                        <Button style={styles.sliderButton} onPress={() => { this.snapToNextSlide(this.state.currentIndex) }}>
+                                            <Text style={styles.sliderButtonText}>Next</Text>
+                                        </Button> :
+                                        <Text style={styles.instructionText}>Complete the instructions to continue</Text> :
+                                    <Button style={styles.buttonPlayOnMyOwn} onPress={() => { this.props.navigation.navigate('ThoughtList') }}>
+                                        <Text style={styles.sliderButtonText}>Play On My Own</Text>
+                                    </Button>}
+                            </View>
+                        </View>
+                        <View style={styles.thoughtsBody}>
+                            {this.state.currentIndex == 0 ?
+                                <View style={styles.welcomeTextWrapper}>
+                                    <Text style={styles.welcomeText}>Ahhh. Open space. Unlimited possibilities.</Text>
+                                </View> :
+                                this.ThoughtList(this.state.thoughtsList)}
                         </View>
                     </View>
-                    <View style={styles.thoughtsBody}>
-                        {this.state.currentIndex == 0 ?
-                            <View style={styles.welcomeTextWrapper}>
-                                <Text style={styles.welcomeText}>Ahhh. Open space. Unlimited possibilities.</Text>
-                            </View> :
-                            this.ThoughtList(this.state.thoughtsList)}
-                    </View>
-                </View>
+                </Content>
             </Container>
         );
     }

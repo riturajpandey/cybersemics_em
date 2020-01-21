@@ -1,8 +1,8 @@
 import React, { Component, } from 'react';
-import { View, Text, TouchableOpacity, TextInput, Dimensions } from 'react-native'
+import { View, Text, TouchableOpacity, TextInput, Dimensions, Keyboard } from 'react-native'
 import { MaterialIcons, Octicons, Ionicons } from '@expo/vector-icons'
 import Carousel, { Pagination } from 'react-native-snap-carousel'; // 3.6.0
-import { Button, Container, Header } from 'native-base';
+import { Button, Container, Header, Content } from 'native-base';
 import styles from './styles'
 import TutorialList from './TutorialList'
 const { width, height } = Dimensions.get('window');
@@ -17,22 +17,17 @@ export default class TutorialHome extends Component {
             thoughtsList: [{}],
             thought: '',
             focusedThought: '',
-            enableDotTapping: false,
-            inputWidth: 10
+            enableDotTapping: false
         };
     }
-
 
     /// <summary>
     /// TODO : set current index when slider changes..
     /// </summary>
     /// <param name="index">current index of the slider</param>
     /// <param name="currentIndex">current value of the currentIndex state</param>
-    handleSnapToItem = (index, currentIndex) => {
-        console.log("snapped to ")
-        console.log(currentIndex)
-        console.log(index)
-        if (currentIndex != index) {
+    handleSnapToItem = (index) => {
+        if (this.state.currentIndex != index) {
             this.setState({
                 currentIndex: index
             })
@@ -46,7 +41,7 @@ export default class TutorialHome extends Component {
     snapToNextSlide = (index) => {
         if (this.state.tutorial.length - 1 > index) {
             this.setState({
-                currentIndex: index + 1
+                currentIndex: index
             }, () => {
                 this._carousel.snapToItem(index + 1)
             })
@@ -70,7 +65,7 @@ export default class TutorialHome extends Component {
     snapToPrevSlide = (index) => {
         if (index != 0) {
             this.setState({
-                currentIndex: index - 1
+                currentIndex: index
             })
             this._carousel.snapToItem(index - 1);
         }
@@ -84,7 +79,6 @@ export default class TutorialHome extends Component {
         return (
             <View style={styles.sliderTextWrapper}>
                 <Text style={styles.tutorialText}>{item.title}</Text>
-
                 {item.description != "" && <Text style={styles.tutorialText}>{item.description}</Text>}
                 <View style={{ flexDirection: 'row' }}>
                     <Text style={styles.tutorialText}>{item.goToNext ? item.descriptionOnTrue : item.descriptionOnFalse}</Text>
@@ -93,7 +87,6 @@ export default class TutorialHome extends Component {
                     </Button>}
                     {index > 1 && index < 8 && item.showHint && <Text style={styles.tutorialText}>{item.hint1}{item.hint2}</Text>}
                 </View>
-
             </View>
         );
     }
@@ -149,6 +142,7 @@ export default class TutorialHome extends Component {
         tempList = []
         let currentIndex = this.state.currentIndex
         let currentThought = this.state.thought.toLowerCase()
+        let myThought = this.state.thought
         if ((currentIndex == 2 && currentThought == 'home') || (currentIndex == 5 && currentThought == 'work')) {
             this.snapToNextSlide(currentIndex)
         }
@@ -171,11 +165,11 @@ export default class TutorialHome extends Component {
         this.setInitialList(this.state.thoughtsList)
 
         var occurrences = tempList.filter((val) => {
-            return val === currentThought;
+            return val === myThought;
         }).length;
 
         if (occurrences > 1) {
-            this.setIncreasedCount(this.state.thoughtsList, currentThought, occurrences)
+            this.setUpdatedCount(this.state.thoughtsList, myThought, occurrences)
         }
         this.setState({}, () => {
             console.log(this.state.thoughtsList)
@@ -204,7 +198,7 @@ export default class TutorialHome extends Component {
     /// <param name="myList">thought list or subthought list</param>
     /// <param name="thought">thought to be added</param>
     /// <param name="occurrences">total ocurrences of the thought in thoughtList</param>
-    setIncreasedCount(myList, thought, occurrences) {
+    setUpdatedCount(myList, thought, occurrences) {
         myList.forEach((item) => {
             if (item.hasOwnProperty('thought')) {
                 if (item.thought == thought) {
@@ -214,7 +208,7 @@ export default class TutorialHome extends Component {
                 }
             }
             if (item.hasOwnProperty('subList')) {
-                this.setIncreasedCount(item.subList, thought, occurrences)
+                this.setUpdatedCount(item.subList, thought, occurrences)
             }
         })
         console.log(tempList)
@@ -254,14 +248,14 @@ export default class TutorialHome extends Component {
     /// <param name="myThought">thought to be added</param>
     /// <param name="index">To insert thought at particular postion</param>
     editThought = (myThoughtList, myThought, index) => {
+        let initialThought = myThoughtList[index].thought
         myThoughtList[index].thought = myThought
+        if (myThoughtList[index].count > 1) {
+            let count = myThoughtList[index].count - 1
+            this.setUpdatedCount(myThoughtList, initialThought, count)
+        }
         this.setState({
-            thought: myThought,
-
-        }, () => {
-            console.log('myThoughtList2')
-            console.log(myThoughtList)
-            console.log(this.state.inutWidth)
+            thought: myThought
         })
     }
 
@@ -292,7 +286,7 @@ export default class TutorialHome extends Component {
         return (
             <View style={styles.thoughtListWrapper}>
                 {data.map((item, index) => {
-                    return (<View key={index}><View style={{ flexDirection: 'row' }} >
+                    return (<View key={index}  ><View style={{ flexDirection: 'row' }} >
                         {item.hasOwnProperty("thought") && <TouchableOpacity style={styles.dotIconWrapper} onPress={() => {
                             item.hasOwnProperty("subList") ? this.handleHideShow(data, index) : this.addSubThought(data, index)
                         }} >
@@ -308,35 +302,31 @@ export default class TutorialHome extends Component {
                                     style={styles.listItemIcon}
                                     color='white'
                                 />}
-                        </TouchableOpacity>
-                        }
-                        {!(item.hasOwnProperty("thought")) && <TouchableOpacity style={styles.addIconWrapper} onPress={() => { }} >
+                        </TouchableOpacity>}
+                        {!(item.hasOwnProperty("thought")) && <TouchableOpacity style={styles.addIconWrapper} >
                             <MaterialIcons
                                 name='add'
                                 size={20}
                                 style={styles.listItemIcon}
                                 color='white'
                             />
-                        </TouchableOpacity>
-                        }
-                        <TextInput style={styles.thoughtText}
-                            placeholder='Add a thought'
-                            onChange={(event) => { this.setState({ inputWidth: event.nativeEvent.text.toString().length * 10 }) }}
+                        </TouchableOpacity>}
+                        <TextInput style={styles.thoughtText} value={item.thought}
+                            placeholder={item.hasOwnProperty('thought') && item.thought != '' ? '' : 'Add a thought'}
                             onChangeText={(thought) => { this.editThought(data, thought, index) }}
                             onFocus={() => { this.setState({ focusedThought: item.thought }) }}
                             onBlur={() => { this.setState({ focusedThought: '' }) }}
                             ref={input => {
                                 this[`thought${index}`] = input;
                             }} onSubmitEditing={() => { this.addThought(data, index) }}>
-
                         </TextInput>
-
-                        {item.count != 1 && <Text style={{ color: 'white' }}>{item.count}</Text>}
+                        {item.hasOwnProperty("count") && item.count != 1 && <Text style={styles.count}>{item.count}</Text>}
                     </View>
                         {item.hasOwnProperty("subList") && item.isOpen && this.ThoughtList(item.subList)}
                     </View>
                     )
                 })}
+
             </View>
         );
     }
@@ -345,75 +335,67 @@ export default class TutorialHome extends Component {
         return (
             <Container>
                 <Header style={{ height: 0 }} androidStatusBarColor='#1B1B1A'></Header>
-                <View style={styles.container}>
-                    <View style={styles.carouselWrapper}>
-                        <Carousel
-                            ref={(c) => { this._carousel = c; }}
-                            lockScrollWhileSnapping={true}
-                            data={this.state.tutorial}
-                            renderItem={this._renderItem.bind(this)}
-                            onSnapToItem={(index) => this.handleSnapToItem(index, this.state.currentIndex)}
-                            sliderWidth={width}
-                            activeSlideOffset={2}
-                            itemWidth={width}
-                            layout={'default'}
-                            firstItem={0}
-                            enableMomentum={true}
-                        />
-                        {this.pagination}
-                        {this.state.currentIndex == 1 ?
-                            <View style={styles.contentTypeButtonWrapper}>
-                                <Button style={styles.contentTypeButton} onPress={() => { this.snapToNextSlide(this.state.currentIndex) }}>
-                                    <Text style={styles.contentTypeButtonText}>To-Do List</Text>
-                                </Button>
-                                <Button style={styles.contentTypeButton} onPress={() => { this.snapToNextSlide(this.state.currentIndex) }}>
-                                    <Text style={styles.contentTypeButtonText}>Journal Theme</Text>
-                                </Button>
-                                <Button style={styles.contentTypeButton} onPress={() => { this.snapToNextSlide(this.state.currentIndex) }}>
-                                    <Text style={styles.contentTypeButtonText}>Book/Podcast Notes</Text>
-                                </Button>
 
-                            </View>
-                            : <View style={styles.sliderButtonWrapper}>
-                                <Button style={styles.sliderButton} onPress={() => { this.snapToPrevSlide(this.state.currentIndex) }}>
-                                    <Text style={styles.sliderButtonText}>Prev</Text>
-                                </Button>
-                                {this.state.tutorial[this.state.currentIndex].goToNext ?
-                                    <Button style={styles.sliderButton} onPress={() => { this.snapToNextSlide(this.state.currentIndex) }}>
-                                        <Text style={styles.sliderButtonText}>Next</Text>
-                                    </Button> :
-                                    <Text style={styles.instructionText}>Complete the instructions to continue</Text>}
-                            </View>}
-                    </View>
+                <Content style={{ backgroundColor: 'black' }}>
+                    <View style={styles.container}>
+                        <View style={styles.carouselWrapper}>
+                            <Carousel
+                                ref={(c) => { this._carousel = c; }}
+                                lockScrollWhileSnapping={true}
+                                data={this.state.tutorial}
+                                renderItem={this._renderItem.bind(this)}
+                                onSnapToItem={(index) => this.handleSnapToItem(index)}
+                                sliderWidth={width}
+                                activeSlideOffset={2}
+                                itemWidth={width}
+                                layout={'default'}
+                                firstItem={0}
+                                enableMomentum={true}
+                            />
+                            {this.pagination}
+                            {this.state.currentIndex == 1 ?
+                                <View style={styles.contentTypeButtonWrapper}>
+                                    <Button style={styles.contentTypeButton} onPress={() => { this.snapToNextSlide(this.state.currentIndex) }}>
+                                        <Text style={styles.contentTypeButtonText}>To-Do List</Text>
+                                    </Button>
+                                    <Button style={styles.contentTypeButton} onPress={() => { this.snapToNextSlide(this.state.currentIndex) }}>
+                                        <Text style={styles.contentTypeButtonText}>Journal Theme</Text>
+                                    </Button>
+                                    <Button style={styles.contentTypeButton} onPress={() => { this.snapToNextSlide(this.state.currentIndex) }}>
+                                        <Text style={styles.contentTypeButtonText}>Book/Podcast Notes</Text>
+                                    </Button>
+                                </View>
+                                : <View style={styles.sliderButtonWrapper}>
+                                    <Button style={styles.sliderButton} onPress={() => { this.snapToPrevSlide(this.state.currentIndex) }}>
+                                        <Text style={styles.sliderButtonText}>Prev</Text>
+                                    </Button>
+                                    {this.state.tutorial[this.state.currentIndex].goToNext ?
+                                        <Button style={styles.sliderButton} onPress={() => { this.snapToNextSlide(this.state.currentIndex) }}>
+                                            <Text style={styles.sliderButtonText}>Next</Text>
+                                        </Button> :
+                                        <Text style={styles.instructionText}>Complete the instructions to continue</Text>}
+                                </View>}
+                        </View>
+                        <View style={styles.thoughtsBody}>
+                            {(this.state.currentIndex > 1) ?
+                                this.ThoughtList(this.state.thoughtsList) :
+                                <View style={styles.welcomeTextWrapper}>
+                                    <Text style={styles.welcomeText}>Ahhh. Open space. Unlimited possibilities.</Text>
+                                </View>
+                            }
+                        </View>
 
-                    <View style={styles.thoughtsBody}>
-                        {(this.state.currentIndex > 1) ?
-                            this.ThoughtList(this.state.thoughtsList) :
-                            <View style={styles.welcomeTextWrapper}>
-                                <Text style={styles.welcomeText}>Ahhh. Open space. Unlimited possibilities.</Text>
-                            </View>
-                        }
                     </View>
-                </View>
+                </Content>
             </Container>
         );
     }
-    showSubscriptText = (preText, mainText, postText) => {
-        return (
-            <View style={{
-                flex: 1,
-                justifyContent: 'center',
-                alignItems: 'center',
-                paddingTop: (Platform.OS) === 'ios' ? 20 : 0,
-                margin: 10
-            }}>
-                <View style={{ flexDirection: 'row' }}>
-                    <Text style={{ fontSize: 20, lineHeight: 30, color: 'white' }}>{preText}</Text>
-                    <Text style={{ fontSize: 11, lineHeight: 18, color: 'white' }}>{mainText}</Text>
-                    <Text style={{ fontSize: 20, lineHeight: 30, color: 'white' }}>{postText}</Text>
-                </View>
-            </View>
-        )
+    subscriptText = (value, pre, post) => {
+        return (<View style={{ flexDirection: 'row' }}>
+            <Text style={{ fontSize: 18, color: 'white' }}>{pre}</Text>
+            <Text style={{ fontSize: 10, color: 'white' }}>{value}</Text>
+            <Text style={{ fontSize: 18, color: 'white' }}>{post}</Text>
+        </View>)
     }
 }
 

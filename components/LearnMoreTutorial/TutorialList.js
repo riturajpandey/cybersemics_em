@@ -1,7 +1,7 @@
 var tutorial = [
     {
         id: "0",
-        title: "If the same thought appears in more than one place, em shows a small number to the right of the thought, for example: ",
+        title: "If the same thought appears in more than one place, em shows a small number to the right of the thought, for example: (3)",
         description: "Let's see this in action",
         descriptionOnFalse: "",
         descriptionOnTrue: "",
@@ -98,4 +98,5 @@ var tutorial = [
     },
 ];
 export default tutorial;
+
 

@@ -1,10 +1,10 @@
 {
   "expoServerNgrokUrl": "https://ny-9iv.verma-shivani.em.exp.direct",
   "packagerNgrokUrl": "https://packager.ny-9iv.verma-shivani.em.exp.direct",
-  "ngrokPid": 2360,
+  "ngrokPid": 11164,
   "devToolsPort": 19002,
   "expoServerPort": 19000,
   "packagerPort": 19001,
-  "packagerPid": 5700,
+  "packagerPid": 7884,
   "webpackServerPort": 19006
 }

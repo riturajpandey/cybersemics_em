@@ -293,8 +293,7 @@ export default class TutorialHome extends Component {
     render = () => {
         return (
             <Container>
-                <Header style={{ height: 0 }} androidStatusBarColor='#1B1B1A'></Header>
-                <Content style={{ backgroundColor: 'black' }}>
+                <Header style={{ height: 0 }} androidStatusBarColor='#1B1B1A'></Header>                
                     <View style={styles.container}>
                         <View style={styles.carouselWrapper}>
                             <Carousel
@@ -330,6 +329,7 @@ export default class TutorialHome extends Component {
                                     </Button>}
                             </View>
                         </View>
+                        <Content>
                         <View style={styles.thoughtsBody}>
                             {this.state.currentIndex == 0 ?
                                 <View style={styles.welcomeTextWrapper}>
@@ -337,8 +337,8 @@ export default class TutorialHome extends Component {
                                 </View> :
                                 this.ThoughtList(this.state.thoughtsList)}
                         </View>
+                        </Content>
                     </View>
-                </Content>
             </Container>
         );
     }

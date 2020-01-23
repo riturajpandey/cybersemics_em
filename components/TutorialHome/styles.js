@@ -4,13 +4,11 @@ const { width, height } = Dimensions.get('window');
 const styles = StyleSheet.create({
     container: {
         backgroundColor: 'black',
-        flex: 1,
-        alignItems: 'center',
-        paddingTop: height * 0.0,
+        flex: 1,        
     },
     carouselWrapper: {
         backgroundColor: '#1B1B1A',
-        height: height * 0.4,
+        height:height*0.4,
         justifyContent: 'space-between'
     },
     sliderButtonWrapper: {

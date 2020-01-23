@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { View, TouchableOpacity, TextInput, Dimensions } from 'react-native'
 import { MaterialIcons, Octicons, Ionicons } from '@expo/vector-icons'
-import { Container, Header,Text } from 'native-base'
+import { Container, Header,Text,Content } from 'native-base'
 const { width, height } = Dimensions.get('window');
 import styles from './styles'
 let tempList = []
@@ -68,9 +68,11 @@ export default class ThoughtList extends Component {
         return (
             <Container>
                 <Header style={{ height: 0 }} androidStatusBarColor='black'></Header>
+                <Content style={{ backgroundColor: 'black' }}>
                 <View style={styles.container}>
                     {this.ThoughtList(this.state.thoughtsList)}
                 </View>
+                </Content>
             </Container>
         );
     }

@@ -30,7 +30,21 @@ const styles = {
         fontSize: 17,
         marginTop: height * 0.02
     },
-
-
+    tutorialCountText: {
+        color: 'white',
+        fontSize: 17,
+    },
+    tutorialCount: {
+        color: 'white',
+        fontSize: 10,
+    },
+    tutorialText1: {
+        color: 'white',
+        fontSize: 17,
+    },
+    superScriptView:{ 
+        flexDirection: 'row',
+        marginTop: height * 0.02 
+    }
 };
 export default styles

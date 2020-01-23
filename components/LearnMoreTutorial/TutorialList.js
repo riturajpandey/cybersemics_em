@@ -1,8 +1,9 @@
-var tutorial = [
+var tutorialHome = [
     {
         id: "0",
-        title: "If the same thought appears in more than one place, em shows a small number to the right of the thought, for example: (3)",
-        description: "Let's see this in action",
+        title: "If the same thought appears in more than one place, em shows a small number to the right of the thought, ",
+        ocurrenceText:"for example: ",
+        description: "Let's see this in action.",
         descriptionOnFalse: "",
         descriptionOnTrue: "",
         goToNext: true
@@ -71,9 +72,10 @@ var tutorial = [
     },
     {
         id: "7",
-        title: `Notice the small number (2). This means that “To Do” appears in 2 places, or contexts (in our case "Home" and "Work").`,
+        title: `This means that “To Do” appears in 2 places, or contexts (in our case "Home" and "Work").`,
+        ocurrenceText:"Notice the small number",
         description: "Imagine a new work task. Add it to this “To Do” list.",
-        descriptionOnFalse: "",
+        descriptionOnFalse: "Do you remember how to do it?",
         descriptionOnTrue: "",
         goToNext: false,
         showHint: false,
@@ -97,6 +99,151 @@ var tutorial = [
         goToNext: true
     },
 ];
-export default tutorial;
 
 
+let tutorialJournal = [
+    {
+        ...tutorialHome[0]
+    },
+    {
+        ...tutorialHome[1]
+    },
+    {
+        ...tutorialHome[2],
+        title: "Let's begin! Create a new thought with the text “Journal”.",
+        hint2: `Hit the Enter key to create a new thought. Then type "Journal".`,
+
+    },
+    {
+        ...tutorialHome[3],
+        title: `Let's say that one of the themes in your journal is "Relationships". Add a thought with the text "Relationships" within “Journal”.`,
+        hint2: `Hold Ctrl and hit Enter to create a new thought within "Journal". Then type "Relationships".`,
+        hint1: `Select "Journal".`
+    },
+    {
+        ...tutorialHome[4],
+        title: "Now add a thought to “Relationships”. This could be a specific person or a general thought about relationships.",
+        hint2: `Hold Ctrl and hit Enter to create a new thought within "Relationships".`,
+        hint1: `Select "Relationships". `
+    },
+    {
+        ...tutorialHome[5],
+        title: `Now we are going to create a different "Relationships" list.`,
+        description: `You probably talk about relationships in therapy. Create a new thought with the text “Therapy” after "Journal" (but at the same level).`,
+        hint1: `Select "Journal"`,
+        hint2: `Hit the Enter key to create a new thought after "Journal". Then type "Therapy".`
+    },
+    {
+        ...tutorialHome[6],
+        title: `Now add a thought with the text "Relationships" within “Therapy”`,
+        hint2: `Hold Ctrl and hit Enter to create a new thought within "Therapy".`,
+        hint1: `Select "Therapy". `
+    },
+    {
+        ...tutorialHome[7],
+        title: `Notice the small number (2). This means that “Relationships” appears in 2 places, or contexts (in our case "Journal" and "Therapy").`,
+        description: "Imagine a realization you have about relationships in therapy. Add it to this “Relationships” list.",
+        hint2: `Hold Ctrl and hit Enter to create a new thought within "Relationships"`,
+        hint1: `Select "Relationships".`
+    },
+    {
+        ...tutorialHome[8],
+        description: `First select "Relationships"`,
+    },
+    {
+        ...tutorialHome[9],
+    },
+];
+
+let tutorialPodcasts = [
+    {
+        ...tutorialHome[0]
+    },
+    {
+        ...tutorialHome[1]
+    },
+    {
+        ...tutorialHome[2],
+        title: "Let's begin! Create a new thought with the text “Podcasts”.",
+        hint2: `Hit the Enter key to create a new thought. Then type "Podcasts".`,
+
+    },
+    {
+        ...tutorialHome[3],
+        title: `Let's say that you hear a podcast on Psychology. Add a thought with the text "Psychology" within “Podcasts”.`,
+        hint2: `Hold Ctrl and hit Enter to create a new thought within "Podcasts". Then type "Psychology".`,
+        hint1: `Select "Podcasts".`
+    },
+    {
+        ...tutorialHome[4],
+        title: "Now add a thought to “Psychology”. You can just make up something about Psychology you could imagine hearing on a podcast.",
+        hint2: `Hold Ctrl and hit Enter to create a new thought within "Psychology".`,
+        hint1: `Select "Psychology". `
+    },
+    {
+        ...tutorialHome[5],
+        title: `Now we are going to create a different "Psychology" list.`,
+        description: `This time imagine reading a book about Psychology. Create a new thought with the text “Books” after "Podcasts" (but at the same level).`,
+        hint1: `Select "Podcasts"`,
+        hint2: `Hit the Enter key to create a new thought after "Podcasts". Then type "Books".`
+    },
+    {
+        ...tutorialHome[6],
+        title: `Now add a thought with the text "Psychology" within “Books”`,
+        hint2: `Hold Ctrl and hit Enter to create a new thought within "Books".`,
+        hint1: `Select "Books". `
+    },
+    {
+        ...tutorialHome[7],
+        title: `Notice the small number (2). This means that “Psychology” appears in 2 places, or contexts (in our case "Podcasts" and "Books").`,
+        description: "Imagine a new thought related to psychology. Add it to this “Psychology” list.",
+        hint2: `Hold Ctrl and hit Enter to create a new thought within "Psychology"`,
+        hint1: `Select "Psychology".`
+    },
+    {
+        ...tutorialHome[8],
+        description: `First select "Psychology"`,
+    },
+    {
+        ...tutorialHome[9],
+    },
+];
+
+export function setContentTypeValue(contentType) {
+    let contentTypeHome={
+        contentItem1:'Home',
+        contentItem2:'Work',
+        contentSublist:'To Do'
+    }
+    let contentTypeJournal={
+        contentItem1:'Journal',
+        contentItem2:'Therapy',
+        contentSublist:'Relationships' 
+    }
+    let contentTypePodcasts={
+        contentItem1:'Podcasts',
+        contentItem2:'Books',
+        contentSublist:'Psychology'
+    }
+    if (contentType == 1) {
+        return contentTypeJournal
+    }
+    else if (contentType == 2) {
+        return contentTypePodcasts
+    }
+    else {
+        return contentTypeHome
+    }
+}
+
+export function showTutorialList(contentType) {
+    if (contentType == 1) {
+        return tutorialJournal
+    }
+    else if (contentType == 2) {
+        return tutorialPodcasts
+    }
+    else {
+        return tutorialHome
+    }
+}

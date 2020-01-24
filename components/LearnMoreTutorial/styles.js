@@ -28,7 +28,14 @@ const styles = {
     tutorialText: {
         color: 'white',
         fontSize: 17,
-        marginTop: height * 0.02
+        marginTop: height * 0.01,
+        marginBottom: height * 0.01 
+    },
+    hintText: {
+        color: 'white',
+        fontSize: 17,
+        marginTop: height * 0.02,
+        marginBottom: height * 0.02
     },
     tutorialCountText: {
         color: 'white',
@@ -40,7 +47,9 @@ const styles = {
     },
     tutorialText1: {
         color: 'white',
-        fontSize: 17,
+        fontSize: 1,
+         marginTop: 0,
+        marginBottom: 0
     },
     superScriptView:{ 
         flexDirection: 'row',

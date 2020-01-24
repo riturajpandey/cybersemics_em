@@ -1,10 +1,11 @@
 import React, { Component } from 'react'
 import { View, TouchableOpacity, TextInput, Dimensions } from 'react-native'
 import { MaterialIcons, Octicons, Ionicons } from '@expo/vector-icons'
-import { Container, Header,Text,Content } from 'native-base'
+import { Container, Header, Text, Content } from 'native-base'
 const { width, height } = Dimensions.get('window');
 import styles from './styles'
 let tempList = []
+let deleteThought = false
 
 export default class ThoughtList extends Component {
     constructor(props) {
@@ -12,7 +13,7 @@ export default class ThoughtList extends Component {
         this.state = {
             thoughtsList: [{}],
             thought: '',
-            focusedThought:''
+            focusedThought: ''
         }
     }
 
@@ -48,7 +49,8 @@ export default class ThoughtList extends Component {
                         <TextInput style={styles.thoughtText} value={item.thought}
                             placeholder={item.hasOwnProperty('thought') && item.thought != '' ? '' : 'Add a thought'}
                             onChangeText={(thought) => { this.editThought(data, thought, index) }}
-                            onFocus={() => { this.setState({ focusedThought: item.thought }) }}
+                            onKeyPress={(event) => { this.deleteThought(event, data, index) }}
+                            onFocus={() => { this.selectThought(item.thought) }}
                             onBlur={() => { this.setState({ focusedThought: '' }) }}
                             ref={input => {
                                 this[`thought${index}`] = input;
@@ -59,7 +61,7 @@ export default class ThoughtList extends Component {
                         {item.hasOwnProperty("subList") && item.isOpen && this.ThoughtList(item.subList)}
                     </View>
                     )
-                })}                
+                })}
             </View>
         );
     }
@@ -69,9 +71,9 @@ export default class ThoughtList extends Component {
             <Container>
                 <Header style={{ height: 0 }} androidStatusBarColor='black'></Header>
                 <Content style={{ backgroundColor: 'black' }}>
-                <View style={styles.container}>
-                    {this.ThoughtList(this.state.thoughtsList)}
-                </View>
+                    <View style={styles.container}>
+                        {this.ThoughtList(this.state.thoughtsList)}
+                    </View>
                 </Content>
             </Container>
         );
@@ -83,7 +85,7 @@ export default class ThoughtList extends Component {
     /// <param name="myThoughtList">thought list in which data is to be added</param>
     /// <param name="index">To insert thought at particular postion</param>
     addThought = (myThoughtList, index) => {
-        tempList=[]
+        tempList = []
         let myThought = this.state.thought
         let obj = {}
         if (this.state.focusedThought != myThoughtList[index].thought && !(myThoughtList[index].hasOwnProperty("subList"))) {
@@ -154,7 +156,25 @@ export default class ThoughtList extends Component {
         })
     }
 
-        /// <summary>
+    selectThought = (thought) => {
+        this.setState({ focusedThought: thought })
+        deleteThought = false
+    }
+
+    deleteThought = (event, myThoughtList, index) => {
+        if (event.nativeEvent.key == 'Backspace' && this.state.thought == '') {
+            if (deleteThought) {
+                if (myThoughtList.length > 1 && !(myThoughtList[index].hasOwnProperty('subList'))) {
+                    myThoughtList.splice(index, 1);
+                    console.log('delete')
+                    this.setState({})
+                }
+            }
+            deleteThought = !deleteThought
+        }
+    }
+
+    /// <summary>
     /// TODO : To convert the nested thought list to single list..
     /// </summary>
     /// <param name="myList">thought list or subthought list</param>

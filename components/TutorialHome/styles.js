@@ -8,8 +8,9 @@ const styles = StyleSheet.create({
     },
     carouselWrapper: {
         backgroundColor: '#1B1B1A',
-        height:height*0.4,
-        justifyContent: 'space-between'
+        justifyContent:"flex-start",
+        
+        alignItems:'stretch'
     },
     sliderButtonWrapper: {
         flexDirection: 'row',
@@ -34,7 +35,6 @@ const styles = StyleSheet.create({
         marginLeft: width * 0.005,
         marginTop: height * 0.01,
         opacity: 0.6
-
     },
     sliderButtonDisablePrev: {
         backgroundColor: 'white',
@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
     },
     sliderTextWrapper: {
         marginRight: width * 0.03,
-        marginLeft: width * 0.03
+        marginLeft: width * 0.03,       
     },
     instructionText: {
         color: 'white',

@@ -141,7 +141,7 @@ let tutorialJournal = [
     },
     {
         ...tutorialHome[7],
-        title: `Notice the small number (2). This means that “Relationships” appears in 2 places, or contexts (in our case "Journal" and "Therapy").`,
+        title: `This means that “Relationships” appears in 2 places, or contexts (in our case "Journal" and "Therapy").`,
         description: "Imagine a realization you have about relationships in therapy. Add it to this “Relationships” list.",
         hint2: `Hold Ctrl and hit Enter to create a new thought within "Relationships"`,
         hint1: `Select "Relationships".`

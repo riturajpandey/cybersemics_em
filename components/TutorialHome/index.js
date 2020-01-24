@@ -6,6 +6,7 @@ import { Button, Container, Header, Content } from 'native-base';
 import styles from './styles'
 import TutorialList from './TutorialList'
 const { width, height } = Dimensions.get('window');
+let deleteThought = false
 
 export default class TutorialHome extends Component {
 
@@ -18,7 +19,8 @@ export default class TutorialHome extends Component {
             thoughtsList: [{}],
             thought: '',
             focusedThought: '',
-            enableDotTapping: false
+            enableDotTapping: false,
+            buttonPress:false
         };
     }
 
@@ -86,10 +88,10 @@ export default class TutorialHome extends Component {
                 {item.description != "" && <Text style={styles.infoText}>{item.description}</Text>}
                 <View style={{ flexDirection: 'row' }}>
                     <Text style={styles.infoText}>{item.goToNext ? item.descriptionOnTrue : item.descriptionOnFalse}</Text>
-                    {index == 3 && !item.showHint && <Button style={styles.hintButton} onPress={() => { this.showThoughtHint() }}>
+                    {this.state.currentIndex==3 && !item.showHint && <Button style={styles.hintButton} onPress={() => { this.showThoughtHint() }}>
                         <Text style={styles.sliderButtonText}>hint</Text>
                     </Button>}
-                    {index == 3 && item.showHint && <Text style={styles.infoText}>{item.hint}</Text>}
+                    {this.state.currentIndex==3 && item.showHint && <Text style={styles.infoText}>{item.hint}</Text>}
                 </View>
             </View>
         );
@@ -201,6 +203,24 @@ export default class TutorialHome extends Component {
         })
     }
 
+    selectThought = (thought) => {
+        this.setState({ focusedThought: thought })
+        deleteThought = false
+    }
+
+    deleteThought = (event, myThoughtList, index) => {
+        if (event.nativeEvent.key == 'Backspace' && this.state.thought == '') {
+            if (deleteThought) {
+                if (myThoughtList.length > 1 && !(myThoughtList[index].hasOwnProperty('subList'))) {
+                    myThoughtList.splice(index, 1);
+                    console.log('delete')
+                    this.setState({})
+                }
+            }
+            deleteThought = !deleteThought
+        }
+    }
+
     /// <summary>
     /// TODO : To Complete the Step 3 5 & 7 of the tutorial..
     /// </summary>
@@ -275,7 +295,8 @@ export default class TutorialHome extends Component {
                         }
                         <TextInput style={styles.thoughtText} placeholder='Add a thought' value={item.thought}
                             onChangeText={(thought) => { this.editThought(data, thought, index) }}
-                            onFocus={() => { this.setState({ focusedThought: item.thought }) }}
+                            onKeyPress={(event) => { this.deleteThought(event, data, index) }}
+                            onFocus={() => { this.selectThought(item.thought) }}
                             onBlur={() => { this.setState({ focusedThought: '' }) }}
                             ref={input => {
                                 this[`thought${index}`] = input;
@@ -293,52 +314,56 @@ export default class TutorialHome extends Component {
     render = () => {
         return (
             <Container>
-                <Header style={{ height: 0 }} androidStatusBarColor='#1B1B1A'></Header>                
-                    <View style={styles.container}>
-                        <View style={styles.carouselWrapper}>
-                            <Carousel
-                                ref={(c) => { this._carousel = c; }}
-                                lockScrollWhileSnapping={true}
-                                data={this.state.tutorial}
-                                renderItem={this._renderItem.bind(this)}
-                                onSnapToItem={(index) => this.handleSnapToItem(index, this.state.currentIndex)}
-                                sliderWidth={width}
-                                activeSlideOffset={2}
-                                itemWidth={width}
-                                layout={'default'}
-                                firstItem={0}
-                                enableMomentum={true}
-                            />
-                            {this.pagination}
-                            <View style={styles.sliderButtonWrapper}>
-                                {this.state.currentIndex != this.state.tutorial.length - 1 ?
-                                    <Button style={this.state.currentIndex == 0 ? styles.sliderButtonDisablePrev : styles.sliderButton} onPress={() => { this.snapToPrevSlide(this.state.currentIndex) }}>
-                                        <Text style={styles.sliderButtonText}>Prev</Text>
-                                    </Button> : <Button style={styles.buttonLearnMore} onPress={() => { this.props.navigation.navigate('LearnMoreTutorial') }} >
-                                        <Text style={styles.sliderButtonText}>Learn More</Text>
-                                    </Button>}
+                <Header style={{ height: 0 }} androidStatusBarColor='#1B1B1A'></Header>
+                <View style={styles.container}>
+                    <View style={styles.carouselWrapper}>
+                        <Carousel
+                            ref={(c) => { this._carousel = c; }}
+                            lockScrollWhileSnapping={true}
+                            data={this.state.tutorial}
+                            renderItem={this._renderItem.bind(this)}
+                            onSnapToItem={(index) => this.handleSnapToItem(index, this.state.currentIndex)}
+                            sliderWidth={width}
+                            activeSlideOffset={2}
+                            itemWidth={width}
+                            layout={'default'}
+                            firstItem={0}
+                            enableMomentum={true}
+                        />
+                        {this.pagination}
+                        <View style={styles.sliderButtonWrapper}>
+                            {this.state.currentIndex != this.state.tutorial.length - 1 ?
+                                <Button style={this.state.currentIndex == 0 ? styles.sliderButtonDisablePrev : styles.sliderButton} onPress={() => { this.snapToPrevSlide(this.state.currentIndex) }}>
+                                    <Text style={styles.sliderButtonText}>Prev</Text>
+                                </Button> : <Button style={styles.buttonLearnMore} onPress={() => { this.props.navigation.navigate('LearnMoreTutorial') }} >
+                                    <Text style={styles.sliderButtonText}>Learn More</Text>
+                                </Button>}
 
-                                {this.state.currentIndex != this.state.tutorial.length - 1 ?
-                                    this.state.tutorial[this.state.currentIndex].goToNext ?
-                                        <Button style={styles.sliderButton} onPress={() => { this.snapToNextSlide(this.state.currentIndex) }}>
-                                            <Text style={styles.sliderButtonText}>Next</Text>
-                                        </Button> :
-                                        <Text style={styles.instructionText}>Complete the instructions to continue</Text> :
-                                    <Button style={styles.buttonPlayOnMyOwn} onPress={() => { this.props.navigation.navigate('ThoughtList') }}>
-                                        <Text style={styles.sliderButtonText}>Play On My Own</Text>
-                                    </Button>}
-                            </View>
+                            {this.state.currentIndex != this.state.tutorial.length - 1 ?
+                                this.state.tutorial[this.state.currentIndex].goToNext ?
+                                    <Button style={styles.sliderButton} onPress={() => { this.snapToNextSlide(this.state.currentIndex) }}>
+                                        <Text style={styles.sliderButtonText}>Next</Text>
+                                    </Button> :
+                                    <Text style={styles.instructionText}>Complete the instructions to continue</Text> :
+                                <Button style={styles.buttonPlayOnMyOwn} onPress={() => { this.props.navigation.navigate('ThoughtList') }}>
+                                    <Text style={styles.sliderButtonText}>Play On My Own</Text>
+                                </Button>}
                         </View>
-                        <Content>
+                    </View>
+                    <Content>
                         <View style={styles.thoughtsBody}>
                             {this.state.currentIndex == 0 ?
                                 <View style={styles.welcomeTextWrapper}>
                                     <Text style={styles.welcomeText}>Ahhh. Open space. Unlimited possibilities.</Text>
                                 </View> :
                                 this.ThoughtList(this.state.thoughtsList)}
+                                <View style={{backgroundColor:'white'}}>
+                               {this.state.buttonPress&&<Text>hello</Text>}
+                               <Button onPress={()=>{this.setState({buttonPress:!this.state.buttonPress})}}><Text>Press</Text></Button>
+                                </View>
                         </View>
-                        </Content>
-                    </View>
+                    </Content>
+                </View>
             </Container>
         );
     }

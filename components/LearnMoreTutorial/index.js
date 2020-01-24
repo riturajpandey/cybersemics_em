@@ -10,6 +10,7 @@ let tempList = []
 let contentItem1 = 'Home'
 let contentItem2 = 'Work'
 let contentSublist = 'To Do'
+let deleteThought = false
 
 export default class TutorialHome extends Component {
     constructor(props) {
@@ -83,16 +84,16 @@ export default class TutorialHome extends Component {
     _renderItem = ({ item, index }) => {
         return (
             <View style={styles.sliderTextWrapper}>
-                {index == 7 && this.superScriptText(index, item.ocurrenceText)}
-                {item.title != "" && <Text style={index == 7 ? styles.tutorialCountText : styles.tutorialText}>{item.title}</Text>}
-                {index == 0 && this.superScriptText(index, item.ocurrenceText)}
-                {item.description != "" && <Text style={styles.tutorialText}>{item.description}</Text>}
+                {this.state.currentIndex == 7 && this.superScriptText(index, item.ocurrenceText)}
+                {this.state.tutorial[this.state.currentIndex].title != "" && <Text style={index == 7 ? styles.tutorialCountText : styles.tutorialText}>{item.title}</Text>}
+                {this.state.currentIndex == 0 && this.superScriptText(index, item.ocurrenceText)}
+                {this.state.tutorial[this.state.currentIndex].description != "" && <Text style={styles.tutorialText}>{item.description}</Text>}
                 {item.descriptionOnFalse != "" &&
                     <Text style={styles.tutorialText}>{item.goToNext ? item.descriptionOnTrue : item.descriptionOnFalse}</Text>}
-                {index > 1 && index < 8 && !item.showHint && <Button style={styles.hintButton} onPress={() => { this.showThoughtHint(index) }}>
+                {this.state.currentIndex > 1 && this.state.currentIndex < 8 && !item.showHint && <Button style={styles.hintButton} onPress={() => { this.showThoughtHint(index) }}>
                     <Text style={styles.sliderButtonText}>hint</Text>
                 </Button>}
-                {index > 1 && index < 8 && item.showHint && <Text style={styles.tutorialText}>{item.hint1}{item.hint2}</Text>}
+                {this.state.currentIndex > 1 && this.state.currentIndex < 8 && item.showHint && <Text style={styles.tutorialText}>{item.hint1}{item.hint2}</Text>}
 
             </View>
         );
@@ -187,7 +188,7 @@ export default class TutorialHome extends Component {
     /// TODO : To convert the nested thought list to single list..
     /// </summary>
     /// <param name="myList">thought list or subthought list</param>
-    setInitialList(myList) {
+    setInitialList = (myList) => {
         myList.forEach((item) => {
             if (item.hasOwnProperty('thought')) {
                 tempList.push(item.thought)
@@ -205,7 +206,7 @@ export default class TutorialHome extends Component {
     /// <param name="myList">thought list or subthought list</param>
     /// <param name="thought">thought to be added</param>
     /// <param name="occurrences">total ocurrences of the thought in thoughtList</param>
-    setUpdatedCount(myList, thought, occurrences) {
+    setUpdatedCount = (myList, thought, occurrences) => {
         myList.forEach((item) => {
             if (item.hasOwnProperty('thought')) {
                 if (item.thought == thought) {
@@ -259,6 +260,7 @@ export default class TutorialHome extends Component {
         myThoughtList[index].thought = myThought
         if (myThoughtList[index].count > 1) {
             let count = myThoughtList[index].count - 1
+            myThoughtList[index].count = 1
             this.setUpdatedCount(myThoughtList, initialThought, count)
         }
         this.setState({
@@ -321,7 +323,8 @@ export default class TutorialHome extends Component {
                         <TextInput style={styles.thoughtText} value={item.thought}
                             placeholder={item.hasOwnProperty('thought') && item.thought != '' ? '' : 'Add a thought'}
                             onChangeText={(thought) => { this.editThought(data, thought, index) }}
-                            onFocus={() => { this.setState({ focusedThought: item.thought }) }}
+                            onKeyPress={(event) => { this.deleteThought(event, data, index) }}
+                            onFocus={() => { this.selectThought(item.thought) }}
                             onBlur={() => { this.setState({ focusedThought: '' }) }}
                             ref={input => {
                                 this[`thought${index}`] = input;
@@ -337,6 +340,24 @@ export default class TutorialHome extends Component {
         );
     }
 
+    selectThought = (thought) => {
+        this.setState({ focusedThought: thought })
+        deleteThought = false
+    }
+
+    deleteThought = (event, myThoughtList, index) => {
+        if (event.nativeEvent.key == 'Backspace' && this.state.thought == '') {
+            if (deleteThought) {
+                if (myThoughtList.length > 1 && !(myThoughtList[index].hasOwnProperty('subList'))) {
+                    myThoughtList.splice(index, 1);
+                    console.log('delete')
+                    this.setState({})
+                }
+            }
+            deleteThought = !deleteThought
+        }
+    }
+
     render = () => {
         return (
             <Container>
@@ -347,7 +368,7 @@ export default class TutorialHome extends Component {
                             ref={(c) => { this._carousel = c; }}
                             lockScrollWhileSnapping={true}
                             data={this.state.tutorial}
-                            renderItem={this._renderItem.bind(this)}
+                            renderItem={this._renderItem}
                             onSnapToItem={(index) => this.handleSnapToItem(index)}
                             sliderWidth={width}
                             activeSlideOffset={2}
@@ -356,6 +377,7 @@ export default class TutorialHome extends Component {
                             firstItem={0}
                             enableMomentum={true}
                         />
+
                         {this.pagination}
                         {this.state.currentIndex == 1 ?
                             <View style={styles.contentTypeButtonWrapper}>
